@@ -13,9 +13,10 @@ Fonctions :
 
 
 TODO
-- Intégration Controller - DAO - Database
-- Sockets Chat
+- Intégration Controller - DAO - Database (UserController, SessionController, et ceux qui manquent)
+- Sockets Chat 
 - Servlet pour les requêtes du Client
+- Ajouter des commentaires dans le code
 - Amélioration architecture des requêtes
 - Servlet pour les pages HTML admin
 - Pages HTML admin
