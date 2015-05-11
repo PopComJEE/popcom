@@ -62,7 +62,7 @@ public class MyEndpoint {
 	
     @OnMessage
     public String echoText(String name) {
-        return name+" Ellington";
+        return name+" Ellington Duke";
     }
 
     @OnMessage
