@@ -76,11 +76,12 @@ public class MyEndpoint {
 	public void onMessage(final Session session, final String chatMessage) {
 
 		System.out.println("onMessage chat");
+		System.out.println(chatMessage);
 		try {
+			session.getRequestURI();
 			for (Session s : session.getOpenSessions()) {
 				if (s.isOpen()) {
 					s.getBasicRemote().sendText(chatMessage);
-
 				}
 			}
 		} catch (IOException e) {
