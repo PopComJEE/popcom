@@ -39,22 +39,41 @@
  */
 package sockets;
 
-import java.io.IOException;
+import helpers.Helper;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.ArrayList;
+
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
+import javax.servlet.http.HttpSession;
+import javax.websocket.EndpointConfig;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
+import objects.PcSession;
+import controller.UserController;
+
 @ServerEndpoint(value="/websocket")
 public class MyEndpoint {
 
 
-	@OnOpen
-	public void open(final Session session) {
-		System.out.println("session openend");
-		System.out.println(session.getBasicRemote().toString());
-	}
+    @OnOpen
+    public void open(Session session, EndpointConfig config) {
+		System.out.println("onOpen chat");
+		System.out.println("ws session id : "+session.getId());
+		System.out.println("ws config user_id : "+config.getUserProperties().get("ID"));
+    }
+//	@OnOpen
+//	public void open(final Session session) {
+//		System.out.println("session openend");
+//		System.out.println(session.getBasicRemote().toString());
+//	}
 
 //	@OnMessage
 //	public String echoText(String name) {
@@ -74,31 +93,48 @@ public class MyEndpoint {
 
 	@OnMessage
 	public void onMessage(final Session session, final String chatMessage) {
-
 		System.out.println("onMessage chat");
 		System.out.println(chatMessage);
+		System.out.println("onMessage ws session id : "+session.getId());
 		try {
-			session.getRequestURI();
-			for (Session s : session.getOpenSessions()) {
-				if (s.isOpen()) {
-					s.getBasicRemote().sendText(chatMessage);
-				}
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			session.getBasicRemote().sendText(interpreteMessage(chatMessage));
+		} catch (IOException e1) {
+			e1.printStackTrace();
 		}
+		
+//		try {
+//			for (Session s : session.getOpenSessions()) {
+//				if (s.isOpen()) {
+//					s.getBasicRemote().sendText(chatMessage);
+//				}
+//			}
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 
+	private String interpreteMessage(String message) throws IOException{
+		JsonObject obj = Json.createReader(new StringReader(message))
+				.readObject();
+		String type = obj.getString("type");
+		switch (type) {
+		case "getUserSessionList":
+//			HttpSession httpSession = (HttpSession) config.getUserProperties().get("httpSession");
+//			String user_id = httpSession.getAttribute("ID").toString();
+			ArrayList<PcSession> sessionList = new UserController().getUser("1").getSessionList();
+			JsonArrayBuilder jBuilder = Json.createArrayBuilder();
+			for(PcSession s : sessionList){
+				jBuilder.add(Helper.toJsonObject(s));
+			}
+			JsonArray json = jBuilder.build();
 
-	//    @WebSocketMessage
-	//    public void echoBinary(ByteBuffer data, PopComSession session) throws IOException {
-	//        System.out.println("echoBinary: " + data);
-	//        StringBuilder builder = new StringBuilder();
-	//        for (byte b : data.array()) {
-	//            builder.append(b);
-	//        }
-	//        System.out.println(builder);
-	//        session.getRemote().sendBytes(data);
-	//    }
+			System.out.println(json.toString());
+			return json.toString();
+		default:
+			break;
+		}
+		return null;
+	}
+	
 }

@@ -51,9 +51,9 @@ public class FriendController {
 		try {
 			dbFriendList = (((Dao_Friend) mDao).search((userId)));
 			for(DbObject friendship : dbFriendList){
-				PcUser user;
-				user = new PcUser((DbUser) daoUser.get(((DbFriend) friendship).getFriendId()));
-				pcFriendList.add(user);
+				PcUser friend = new PcUser((DbUser) daoUser.get(((DbFriend) friendship).getFriendId()));
+				System.out.println("friend id:"+((DbFriend) friendship).getFriendId());
+				pcFriendList.add(friend);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

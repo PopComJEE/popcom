@@ -44,7 +44,7 @@ public class Dao_User extends Dao{
 	public DbObject get(String id) throws SQLException {
 		Statement stmt = null;
 		ResultSet rset = null;
-		DbUser dbUser;
+		DbUser dbUser = null;
 		try {
 			connect();
 			stmt = mConnection.createStatement();
@@ -53,7 +53,8 @@ public class Dao_User extends Dao{
 					+" WHERE "
 					+DbUser.ID+" = '"+id+"'"
 					);
-			dbUser=new DbUser(rset);
+			if(rset.next())
+				dbUser=new DbUser(rset);
 			mConnection.close();
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
@@ -95,6 +96,34 @@ public class Dao_User extends Dao{
 		return dbUser;
 	}
 
+	public DbObject getByToken(String token) throws SQLException {
+		Statement stmt = null;
+		ResultSet rset = null;
+		DbUser dbUser;
+		try {
+			connect();
+			stmt = mConnection.createStatement();
+			rset = stmt.executeQuery(
+					"SELECT * FROM "+DbUser.TABLE_USERS
+					+" WHERE "
+					+DbUser.HTML_TOKEN+" = '"+token+"'"
+					);
+			if(rset.next())
+				dbUser = new DbUser(rset);
+			else dbUser = null;
+			mConnection.close();
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+			rset.close();
+			stmt.close();
+			mConnection.close();
+			return null;
+		}
+		rset.close();
+		stmt.close();
+		return dbUser;
+	}
+
 	@Override
 	public DbObject add(DbObject dbObject) throws SQLException {
 		DbUser user = (DbUser) dbObject;
@@ -103,7 +132,7 @@ public class Dao_User extends Dao{
 			connect();
 			System.out.println("INSERT INTO "+DbUser.TABLE_USERS
 					+" ("
-//					+DbUser.ID+", "
+					//					+DbUser.ID+", "
 					+DbUser.LAST_NAME+", "
 					+DbUser.FIRST_NAME+", "
 					+DbUser.BIRTHDAY+", "
@@ -115,7 +144,7 @@ public class Dao_User extends Dao{
 					+DbUser.HTML_TOKEN+", "
 					+DbUser.IS_ADMIN
 					+") values ("
-//					+"'null',"
+					//					+"'null',"
 					+"'"+user.getLastName()+"',"
 					+"'"+user.getFirstName()+"',"
 					+"'"+user.getBirthday()+"',"
@@ -130,7 +159,7 @@ public class Dao_User extends Dao{
 			pstmt = mConnection.prepareStatement(
 					"INSERT INTO "+DbUser.TABLE_USERS
 					+" ("
-//					+DbUser.ID+", "
+					//					+DbUser.ID+", "
 					+DbUser.LAST_NAME+", "
 					+DbUser.FIRST_NAME+", "
 					+DbUser.BIRTHDAY+", "
@@ -142,7 +171,7 @@ public class Dao_User extends Dao{
 					+DbUser.HTML_TOKEN+", "
 					+DbUser.IS_ADMIN
 					+") values ("
-//					+"'null',"
+					//					+"'null',"
 					+"'"+user.getLastName()+"',"
 					+"'"+user.getFirstName()+"',"
 					+"'"+user.getBirthday()+"',"

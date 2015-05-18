@@ -49,6 +49,7 @@ public class SessionController {
 			sessionIdList = (((Dao_Session) mDao).getUserSessionIdList((userId)));
 			for(String sessionId : sessionIdList){
 				sessionList.add(getSession(sessionId));
+				System.out.println("USER SESSION ID:"+sessionId);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -62,10 +63,10 @@ public class SessionController {
 		ArrayList<DbUser> userList = new ArrayList<DbUser>();
 		Dao_User daoUser = new Dao_User();
 		try {
-			System.out.println(session = mDao.search(sessionId));
+			System.out.println("MDAO SESSION SEARCH"+(session = mDao.search(sessionId)));
 			for(DbObject dbSession : session){
-				DbUser user;
-				user = (DbUser) daoUser.get(((DbSession) dbSession).getUserId());
+				System.out.println("DbSession:"+dbSession.toString());
+				DbUser user = (DbUser) daoUser.get(((DbSession) dbSession).getUserId());
 				userList.add(user);
 			}
 		} catch (SQLException e) {

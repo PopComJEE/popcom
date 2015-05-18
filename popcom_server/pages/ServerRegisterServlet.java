@@ -35,6 +35,7 @@ public class ServerRegisterServlet extends HttpServlet {
 //		PcUser tempUser= new UserController().getUserByLogin(userLogin);
 		if(b){
 			System.out.println("register OK");
+			System.out.println(request.getSession().getAttribute("ID"));
 		}else {
 			System.out.println("register not OK");
 		}

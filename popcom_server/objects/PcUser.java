@@ -8,21 +8,27 @@ import dao_objects.DbUser;
 
 
 public class PcUser {
-	
+
 	private DbUser mUser;
 	private ArrayList<PcSession> mSessionList;
-	private ArrayList<DbUser> mFriendList;
-	
+	private ArrayList<PcUser> mFriendList;
+
 	public PcUser(DbUser db_user){
 		mUser=db_user;
 		mSessionList = new ArrayList<PcSession>();
-		mFriendList = new ArrayList<DbUser>();
+		mFriendList = new ArrayList<PcUser>();
 	}
-	
-	public PcUser(DbUser db_user, ArrayList<PcSession> sessionList, ArrayList<DbUser> friendList){
+
+	public PcUser(DbUser db_user, ArrayList<PcSession> sessionList, ArrayList<PcUser> friendList){
 		mUser=db_user;
-		mSessionList = sessionList;
-		mFriendList = friendList;
+		if(sessionList==null)
+			mSessionList = new ArrayList<PcSession>();
+		else
+			mSessionList = sessionList;
+		if(friendList==null)
+			mFriendList = new ArrayList<PcUser>();
+		else
+			mFriendList = friendList;
 	}
 
 	public DbUser getUser() {
@@ -41,13 +47,13 @@ public class PcUser {
 		mSessionList = sessionList;
 	}
 
-	public ArrayList<DbUser> getFriendList() {
+	public ArrayList<PcUser> getFriendList() {
 		return mFriendList;
 	}
 
-	public void setFriendList(ArrayList<DbUser> friendList) {
+	public void setFriendList(ArrayList<PcUser> friendList) {
 		mFriendList = friendList;
 	}
-	
+
 
 }

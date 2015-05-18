@@ -48,7 +48,7 @@ public class Dao_Session extends Dao {
 		Statement stmt = null;
 		ResultSet rset = null;
 		ArrayList<DbSession> sessionList =  new ArrayList<DbSession>();
-		DbSession session;
+		DbSession session = null;
 		try {
 			connect();
 			stmt = mConnection.createStatement();
@@ -57,7 +57,8 @@ public class Dao_Session extends Dao {
 					+" WHERE "
 					+DbSession.ID+" = '"+id+"'"
 					);
-			session = new DbSession(rset);
+			if(rset.next())
+				session = new DbSession(rset);
 			mConnection.close();
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
@@ -184,7 +185,6 @@ public class Dao_Session extends Dao {
 					+DbSession.ID_USER+" = '"+userId+"'"
 					);
 			while(rset.next()){
-				DbSession dbSession = new DbSession(rset);
 				sessionIdList.add(rset.getString(DbSession.ID_SESSION));
 			}
 			mConnection.close();

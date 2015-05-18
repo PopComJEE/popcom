@@ -1,0 +1,53 @@
+<style type="text/css">
+body{
+	
+	font: 95% century gothic, century gothic, sans-serif;
+    max-width: 400px;
+    margin: 10px auto;
+    padding: 16px;
+    background: #F7F7F7;
+	
+}
+
+#header{ 
+margin-left:0px;
+height:140px; 
+font: 95% century gothic, century gothic, sans-serif;
+background:#f95252;
+color: #fff; 
+margin-bottom:0px;
+}
+
+#img_pro{
+margin-top:10px;
+margin-left:10px;
+float: left;
+WIDTH:100px;
+HEIGHT:100px;
+}
+
+#contact_trouvé{
+font: 95% century gothic, century gothic, sans-serif;
+float: left;
+margin-top:10px;
+height:3000px;
+width:60%;
+background:#28ad63;
+}
+
+#liste_amis{
+float: right;
+font: 95% century gothic, century gothic, sans-serif;
+margin-top:10px;
+height:3000px;
+width:40%;
+background:#E0E0E0;
+}
+
+a{
+	
+	  font: 30% century gothic, century gothic, sans-serif;
+	  margin-left: 18px;
+	  float: right;
+}
+</style>

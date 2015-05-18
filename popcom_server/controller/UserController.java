@@ -3,6 +3,7 @@ package controller;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import objects.PcSession;
 import objects.PcUser;
 import dao.Dao;
 import dao.Dao_User;
@@ -62,12 +63,38 @@ public class UserController {
 		DbUser dbUser;
 		try {
 			System.out.println(dbUser = (DbUser) ((Dao_User) mDao).getByLogin(login));
+			if(dbUser==null){
+				return null;
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
 		}
 		return new PcUser(dbUser);
 	}
+	
+	
+	
+
+	public PcUser getUserByToken(String token){
+		DbUser dbUser;
+		try {
+			System.out.println(dbUser = (DbUser) ((Dao_User) mDao).getByToken(token));
+			if(dbUser==null){
+				return null;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+		ArrayList<PcUser> friendList = new FriendController().getUserFriendList(dbUser.getId());
+		ArrayList<PcSession> sessionList = new SessionController().getUserSessions(dbUser.getId());
+	
+		return new PcUser(dbUser,sessionList,friendList);
+	}
+	
+	
+	
 
 	public ArrayList<PcUser> searchUser(String query){
 		ArrayList<DbObject> dbUserList;
