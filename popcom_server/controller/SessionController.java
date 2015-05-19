@@ -3,11 +3,16 @@ package controller;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+
 import objects.PcSession;
 import objects.PcUser;
 import dao.Dao;
+import dao.Dao_Message;
 import dao.Dao_Session;
 import dao.Dao_User;
+import dao_objects.DbMessage;
 import dao_objects.DbObject;
 import dao_objects.DbSession;
 import dao_objects.DbUser;
@@ -22,8 +27,10 @@ public class SessionController {
 
 	public boolean joinSession(PcUser user, String sessionId){
 		DbSession session = new DbSession(user.getUser(), sessionId);
+		System.out.println("SCONTROLLER USER : "+user.getUser().toString());
+		System.out.println("SCONTROLLER SESSION : "+session.toString());
 		try {
-			System.out.println(mDao.add(session));
+			mDao.add(session);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
@@ -34,7 +41,7 @@ public class SessionController {
 	public boolean leaveSession(PcUser user, String sessionId){
 		DbSession session = new DbSession(user.getUser(), sessionId);
 		try {
-			System.out.println(mDao.remove(session));
+			mDao.remove(session);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
@@ -49,7 +56,6 @@ public class SessionController {
 			sessionIdList = (((Dao_Session) mDao).getUserSessionIdList((userId)));
 			for(String sessionId : sessionIdList){
 				sessionList.add(getSession(sessionId));
-				System.out.println("USER SESSION ID:"+sessionId);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -62,18 +68,24 @@ public class SessionController {
 		ArrayList<DbObject> session;
 		ArrayList<DbUser> userList = new ArrayList<DbUser>();
 		Dao_User daoUser = new Dao_User();
+		JsonArray history=null;
+		JsonObject lastMessage=null;
 		try {
-			System.out.println("MDAO SESSION SEARCH"+(session = mDao.search(sessionId)));
+			session = mDao.search(sessionId);
 			for(DbObject dbSession : session){
-				System.out.println("DbSession:"+dbSession.toString());
 				DbUser user = (DbUser) daoUser.get(((DbSession) dbSession).getUserId());
 				userList.add(user);
+			}
+			DbMessage temp = (DbMessage) new Dao_Message().get(sessionId);
+			if(temp!=null){
+				history = temp.getHistory();
+				lastMessage = temp.getLastMessage();
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
 		}
-		return new PcSession(sessionId, userList);
+		return new PcSession(sessionId, userList, history, lastMessage);
 	}
 
 }

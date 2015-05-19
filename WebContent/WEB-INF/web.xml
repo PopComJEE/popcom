@@ -36,4 +36,12 @@
     <servlet-name>main_servlet</servlet-name>
     <url-pattern>/main</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <servlet-name>chat_servlet</servlet-name>
+    <servlet-class>pages.ChatServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>chat_servlet</servlet-name>
+    <url-pattern>/chat</url-pattern>
+  </servlet-mapping>
 </web-app>

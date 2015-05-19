@@ -25,7 +25,7 @@ public class FriendController {
 	public boolean addFriend(PcUser user, String friendId){
 		DbFriend friendship = new DbFriend(user.getUser(), friendId);
 		try {
-			System.out.println(mDao.add(friendship));
+			mDao.add(friendship);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
@@ -36,7 +36,7 @@ public class FriendController {
 	public boolean removeFriend(PcUser user, String friendId){
 		DbFriend friendship = new DbFriend(user.getUser(), friendId);
 		try {
-			System.out.println(mDao.remove(friendship));
+			mDao.remove(friendship);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
@@ -52,7 +52,6 @@ public class FriendController {
 			dbFriendList = (((Dao_Friend) mDao).search((userId)));
 			for(DbObject friendship : dbFriendList){
 				PcUser friend = new PcUser((DbUser) daoUser.get(((DbFriend) friendship).getFriendId()));
-				System.out.println("friend id:"+((DbFriend) friendship).getFriendId());
 				pcFriendList.add(friend);
 			}
 		} catch (SQLException e) {

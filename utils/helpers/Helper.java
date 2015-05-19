@@ -13,11 +13,15 @@ import javax.json.JsonReader;
 import objects.PcSession;
 import objects.PcUser;
 import dao_objects.DbFriend;
+import dao_objects.DbMessage;
 import dao_objects.DbSession;
 import dao_objects.DbUser;
 
 public class Helper {
 
+	public static final String MESSAGE_ID_SESSION = DbMessage.ID_SESSION;
+	public static final String MESSAGE_HISTORY = DbMessage.HISTORY;
+	public static final String LAST_MESSAGE = DbMessage.LAST_MESSAGE;
 
 	public static final String FRIENDHSIP_ID = DbFriend.ID;
 	public static final String FRIENDHSIP_USER_ID = DbFriend.USER_ID;
@@ -48,15 +52,15 @@ public class Helper {
 
 		JsonObjectBuilder userBuilder=Json.createObjectBuilder()
 				.add(USER_DATA, toJsonObject(user.getUser()));
-		
+
 		JsonArrayBuilder sessionListBuilder=Json.createArrayBuilder();
 		for(PcSession session : user.getSessionList()){
 			sessionListBuilder.add(toJsonObject(session));
 		}
-				
+
 		userBuilder.add(USER_SESSION_LIST, sessionListBuilder.build());
 		userBuilder.add(USER_FRIEND_LIST, toJsonArray(user.getFriendList()));
-		
+
 		return userBuilder.build();
 	}
 
@@ -75,7 +79,7 @@ public class Helper {
 				.add(USER_IS_ADMIN, user.isAdmin());
 		return userBuilder.build();
 	}
-	
+
 	public static JsonObject toJsonObject(PcSession session){
 		JsonObjectBuilder sessionBuilder=Json.createObjectBuilder();
 		JsonArrayBuilder userListBuilder=Json.createArrayBuilder();
@@ -84,9 +88,16 @@ public class Helper {
 		}
 		sessionBuilder.add(SESSION_ID_SESSION, session.getSessionId());
 		sessionBuilder.add(SESSION_USER_LIST, userListBuilder.build());
+		if(session.getHistory()!=null&&session.getLastMessage()!=null){
+			sessionBuilder.add(MESSAGE_HISTORY, session.getHistory());
+			sessionBuilder.add(LAST_MESSAGE, session.getLastMessage());
+		}else{
+			sessionBuilder.add(MESSAGE_HISTORY, "");
+			sessionBuilder.add(LAST_MESSAGE, "");
+		}
 		return sessionBuilder.build();
 	}
-	
+
 	public static JsonArray toJsonArray(ArrayList<PcUser> friendList){
 		JsonArrayBuilder friendListBuilder=Json.createArrayBuilder();
 		for(PcUser u : friendList){
@@ -94,14 +105,14 @@ public class Helper {
 		}
 		return friendListBuilder.build();
 	}
-	
+
 	public static JsonObject toJsonObject(String s){
 		JsonReader jsonReader = Json.createReader(new StringReader(s));
 		JsonObject json = jsonReader.readObject();
 		jsonReader.close();
 		return json;
 	}
-	
+
 	public static DbUser toDbUser(JsonObject user){
 		return new DbUser(
 				user.getString(USER_ID),
@@ -117,7 +128,7 @@ public class Helper {
 				user.getBoolean(USER_IS_ADMIN)
 				);
 	}
-	
+
 	public static PcSession toSession(JsonObject session){
 		ArrayList<DbUser> userList = new ArrayList<DbUser>();
 		JsonArray userJsonList = session.getJsonArray(SESSION_USER_LIST);
@@ -126,7 +137,7 @@ public class Helper {
 		}
 		return new PcSession(session.getString(SESSION_ID_SESSION), userList);
 	}
-	
+
 	public static ArrayList<PcUser> toFriendList(JsonArray jsonFriendList){
 		ArrayList<PcUser> friendList = new ArrayList<PcUser>();
 		for(int i=0;i<jsonFriendList.size();i++){
@@ -134,7 +145,7 @@ public class Helper {
 		}
 		return friendList;
 	}
-	
+
 	public static PcUser toPcUser(JsonObject user){
 		DbUser dbUser = toDbUser(user.getJsonObject(USER_DATA));
 		ArrayList<PcUser> friendList = toFriendList(user.getJsonArray(USER_FRIEND_LIST));
@@ -145,6 +156,6 @@ public class Helper {
 		}
 		return new PcUser(dbUser, sessionList, friendList);
 	}
-	
-	
+
+
 }

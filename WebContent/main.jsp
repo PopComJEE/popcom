@@ -11,7 +11,7 @@
 <script src="resource/js/jquery-1.10.2.min.js"></script>
 <script type="text/javascript">
 	var wsocket;
-	var serviceLocation = "ws://192.168.0.12:8080/popcom/websocket";
+	var serviceLocation = "ws://localhost:8080/popcom/websocket";
 	var $chatWindow;
 
 	function onMessageReceived(evt) {
@@ -43,7 +43,7 @@
 		xmlHttp.send(null);
 		return xmlHttp.responseText;
 	}
-
+	
 	function populatePage(jsonUser) {
 		var user = document.getElementById("header");
 		user.innerHTML += 
@@ -51,13 +51,13 @@
 		  + "<p>" + jsonUser.user_data.email + "</p>";
 		  
 		
-		var friends = document.getElementById("zone_contact");
+		var friends = document.getElementById("zone_contact_active");
 		var friendArray = jsonUser.friend_list;
 		 var out = "";
 		    var i;
 		    for(i = 0; i < friendArray.length; i++) {
-		        out += '<input type="checkbox" name="'+friendArray[i].user_data.id+'" value="'+friendArray[i].user_data.id+'">'
-		        + '<font size="6">' + friendArray[i].user_data.login + '</font></a><br>';
+		        out += '<p><input type="checkbox" name="'+friendArray[i].user_data.id+'" value="'+friendArray[i].user_data.id+'">'
+		        + '<font size="6">' + friendArray[i].user_data.login + '</font><p>';
 		    }
 		    friends.innerHTML += out;
 		    
@@ -67,23 +67,23 @@
 		    var out = "";
 		    var i;
 		    for(i = 0; i < sessionArray.length; i++) {
-		        out += '<a href="' + sessionArray[i].id_session + '"><p><font size="6">Conversation ' + sessionArray[i].id_session + '</font></p>';
+		        out += '<a href="fenetre.jsp?session_id='+sessionArray[i].id_session+'"><p><font size="6">Conversation ' + sessionArray[i].id_session + '</font></p>';
 		        var userList=sessionArray[i].user_list
 		        for(j=0;j<userList.length;j++) {
 		        	out += '<p><font size="6">' + sessionArray[i].user_list[j].login + '</font></p>';
 		        }
-		       out += '</a><br>';
+		       	out += '<p><font size="3">' +sessionArray[i].last_message.user +' : '+sessionArray[i].last_message.message + '</font></p></a><br>';
 		    }
 		    conversations.innerHTML += out;
 		    
 	}
 
 	var fonc = function() {
-		var response = httpGet("http://192.168.0.12:8080/popcom/main?type=getAll");
+		var response = httpGet("http://localhost:8080/popcom/main?type=getAll");
 		alert(response);
 		var myObject = JSON.parse(response);
 		if (myObject.status == "refused") {
-			window.location.replace("http://192.168.0.12:8080/popcom/login.jsp");
+			window.location.replace("http://localhost:8080/popcom/login.jsp");
 		} else {
 			populatePage(myObject);
 		}
@@ -106,8 +106,9 @@
 		
 	</div>
 	
-<div id="zone_contact"><center><font size="6">Zone Contact</font></center></div>
-<div id="zone_convers"><center><font size="6">Zone Conversation</font></center></div>
+<div id="zone_contact"><center><font size="6">Contacts</font></center><br>
+<form id="zone_contact_active" action="chat" method="POST"><p><input type="submit" value="Connexion"></p></form></div>
+<div id="zone_convers"><center><font size="6">Conversations</font></center></div>
 
 
 </body>

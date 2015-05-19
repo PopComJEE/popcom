@@ -20,7 +20,7 @@ public class UserController {
 
 	public boolean addUser (PcUser user){
 		try {
-			System.out.println(mDao.add(user.getUser()));
+		mDao.add(user.getUser());
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
@@ -30,7 +30,7 @@ public class UserController {
 
 	public boolean deleteUser(PcUser user){
 		try {
-			System.out.println(mDao.remove(user.getUser()));
+			mDao.remove(user.getUser());
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
@@ -40,7 +40,7 @@ public class UserController {
 
 	public boolean updateUser(PcUser user){
 		try {
-			System.out.println(mDao.update(user.getUser()));
+			mDao.update(user.getUser());
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
@@ -62,7 +62,7 @@ public class UserController {
 	public PcUser getUserByLogin(String login){
 		DbUser dbUser;
 		try {
-			System.out.println(dbUser = (DbUser) ((Dao_User) mDao).getByLogin(login));
+			dbUser = (DbUser) ((Dao_User) mDao).getByLogin(login);
 			if(dbUser==null){
 				return null;
 			}
@@ -79,8 +79,9 @@ public class UserController {
 	public PcUser getUserByToken(String token){
 		DbUser dbUser;
 		try {
-			System.out.println(dbUser = (DbUser) ((Dao_User) mDao).getByToken(token));
+			dbUser = (DbUser) ((Dao_User) mDao).getByToken(token);
 			if(dbUser==null){
+				System.out.println("DBUSER RETURN NULL");
 				return null;
 			}
 		} catch (SQLException e) {
@@ -100,7 +101,7 @@ public class UserController {
 		ArrayList<DbObject> dbUserList;
 		ArrayList<PcUser> pcUserList = new ArrayList<PcUser>();
 		try {
-			System.out.println(dbUserList = mDao.search(query));
+			dbUserList = mDao.search(query);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;

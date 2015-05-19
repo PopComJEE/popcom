@@ -44,11 +44,16 @@ public class MainServlet extends HttpServlet {
 			String type = request.getParameter("type");
 			if(type.equalsIgnoreCase("getAll")){
 				PcUser user= new UserController().getUserByToken(sessionId);
-				
-
-				PrintWriter out = response.getWriter();
-				out.print(Helper.toJsonObject(user));
-				out.flush();
+				if(user==null){
+					System.out.println("refused");
+					PrintWriter out = response.getWriter();
+					out.print("{\"status\":\"refused\"}");
+					out.flush();
+				}else{
+					PrintWriter out = response.getWriter();
+					out.print(Helper.toJsonObject(user));
+					out.flush();
+				}
 			}
 		}
 	}
