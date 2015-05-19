@@ -42,7 +42,6 @@ public class ChatServlet extends HttpServlet {
 			out.print("{\"status\":\"refused\"}");
 			out.flush();
 		}else{
-			System.out.println("accepted");
 			String session_id = request.getParameter("session_id");
 			String type = request.getParameter("type");
 			if(type.equalsIgnoreCase("getAll")){
@@ -53,10 +52,19 @@ public class ChatServlet extends HttpServlet {
 					out.print("{\"status\":\"refused\"}");
 					out.flush();
 				}else{
+					System.out.println("accepted");
 					for(PcSession s : user.getSessionList()){
 						if(s.getSessionId().equals(session_id)){
 							PrintWriter out = response.getWriter();
-							out.print(s.getHistory());
+							out.print("{\"history\":");
+							if(s.getHistory()==null){
+								out.print("[]");
+							}else{
+								out.print(s.getHistory());
+							}
+							out.print(",\"user\":");
+							out.print("\""+user.getUser().getLogin()+"\"");
+							out.print("}");
 							out.flush();
 						}
 					}

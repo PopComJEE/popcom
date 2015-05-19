@@ -21,14 +21,6 @@
     <url-pattern>/login</url-pattern>
   </servlet-mapping>
   <servlet>
-    <servlet-name>session_servlet</servlet-name>
-    <servlet-class>pages.ServerSessionServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>session_servlet</servlet-name>
-    <url-pattern>/session</url-pattern>
-  </servlet-mapping>
-  <servlet>
     <servlet-name>main_servlet</servlet-name>
     <servlet-class>pages.MainServlet</servlet-class>
   </servlet>

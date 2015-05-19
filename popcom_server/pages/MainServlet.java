@@ -1,6 +1,6 @@
 package pages;
 
-import helpers.Helper;
+import helpers.JsonHelper;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -51,7 +51,7 @@ public class MainServlet extends HttpServlet {
 					out.flush();
 				}else{
 					PrintWriter out = response.getWriter();
-					out.print(Helper.toJsonObject(user));
+					out.print(JsonHelper.toJsonObject(user));
 					out.flush();
 				}
 			}

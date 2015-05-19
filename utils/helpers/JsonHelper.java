@@ -17,7 +17,7 @@ import dao_objects.DbMessage;
 import dao_objects.DbSession;
 import dao_objects.DbUser;
 
-public class Helper {
+public class JsonHelper {
 
 	public static final String MESSAGE_ID_SESSION = DbMessage.ID_SESSION;
 	public static final String MESSAGE_HISTORY = DbMessage.HISTORY;

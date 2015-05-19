@@ -39,17 +39,15 @@
  */
 package sockets;
 
-import helpers.Helper;
-
 import java.io.IOException;
 import java.io.StringReader;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
-import javax.servlet.http.HttpSession;
 import javax.websocket.EndpointConfig;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
@@ -57,84 +55,93 @@ import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
 import objects.PcSession;
+import objects.PcUser;
+import controller.SessionController;
 import controller.UserController;
+import dao.Dao_Message;
+import dao_objects.DbMessage;
+import dao_objects.DbUser;
 
-@ServerEndpoint(value="/websocket")
+@ServerEndpoint(value="/websocket", configurator = MyEndpointConfig.class)
 public class MyEndpoint {
 
+	private String mSessionId;
 
-    @OnOpen
-    public void open(Session session, EndpointConfig config) {
-		System.out.println("onOpen chat");
-		System.out.println("ws session id : "+session.getId());
-		System.out.println("ws config user_id : "+config.getUserProperties().get("ID"));
-    }
-//	@OnOpen
-//	public void open(final Session session) {
-//		System.out.println("session openend");
-//		System.out.println(session.getBasicRemote().toString());
-//	}
+	@OnOpen
+	public void open(Session session, EndpointConfig config) {
+		mSessionId=config.getUserProperties().get("websocket_token").toString();
+		System.out.println("session opened");
+		System.out.println(session.getBasicRemote().toString());
 
-//	@OnMessage
-//	public String echoText(String name) {
-//		return name+" Ellington";
-//	}
-
-//	@OnMessage
-//	public void echoBinary(byte[] data, Session session) throws IOException {
-//		System.out.println("echoBinary: " + data);
-//		StringBuilder builder = new StringBuilder();
-//		for (byte b : data) {
-//			builder.append(b);
-//		}
-//		System.out.println(builder);
-//		session.getBasicRemote().sendBinary(ByteBuffer.wrap(data));
-//	}
+		System.out.println(mSessionId);
+	}
 
 	@OnMessage
 	public void onMessage(final Session session, final String chatMessage) {
 		System.out.println("onMessage chat");
 		System.out.println(chatMessage);
-		System.out.println("onMessage ws session id : "+session.getId());
+		String convId=actionsOnMessage(chatMessage);
+		PcSession conversation=new SessionController().getSession(convId);
+		ArrayList<DbUser> userList=conversation.getUserList();
+		String[] tokenList = new String[userList.size()];
+		for(int i=0;i<tokenList.length;i++){
+			tokenList[i]=userList.get(i).getMessage();
+		}
 		try {
-			session.getBasicRemote().sendText(interpreteMessage(chatMessage));
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-		
-//		try {
-//			for (Session s : session.getOpenSessions()) {
-//				if (s.isOpen()) {
-//					s.getBasicRemote().sendText(chatMessage);
-//				}
-//			}
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-	}
+			for (Session s : session.getOpenSessions()) {
+				String token=s.getUserProperties().get("websocket_token").toString();
+				for(int i=0;i<tokenList.length;i++){
+					if(tokenList[i].equals(token)){
+						if (s.isOpen()) {
+							s.getBasicRemote().sendText(chatMessage);
+						}
+					}
+				}
 
-	private String interpreteMessage(String message) throws IOException{
-		JsonObject obj = Json.createReader(new StringReader(message))
-				.readObject();
-		String type = obj.getString("type");
-		switch (type) {
-		case "getUserSessionList":
-//			HttpSession httpSession = (HttpSession) config.getUserProperties().get("httpSession");
-//			String user_id = httpSession.getAttribute("ID").toString();
-			ArrayList<PcSession> sessionList = new UserController().getUser("1").getSessionList();
-			JsonArrayBuilder jBuilder = Json.createArrayBuilder();
-			for(PcSession s : sessionList){
-				jBuilder.add(Helper.toJsonObject(s));
 			}
-			JsonArray json = jBuilder.build();
-
-			System.out.println(json.toString());
-			return json.toString();
-		default:
-			break;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		return null;
 	}
-	
+
+	private String actionsOnMessage(String message){
+		JsonObject obj = Json.createReader(new StringReader(message)).readObject();
+		String userLogin = obj.getString("user");
+		PcUser user = new UserController().getUserByLogin(userLogin);
+		user.getUser().setMessage(mSessionId);
+		new UserController().updateUser(user);
+		try {
+			DbMessage history;
+			history = (DbMessage) new Dao_Message().get(obj.getString("session_id"));
+			JsonArray array;
+			JsonArrayBuilder builder=Json.createArrayBuilder();
+			boolean b=false;
+			if(history!=null){
+				b=true;
+				array=history.getHistory();
+				for(int i=0;i<array.size();i++){
+					builder.add(array.get(i));
+				}
+			}
+			builder.add(obj);
+			array=builder.build();
+			history=new DbMessage();
+			history.setHistory(array);
+			history.setLastMessage(obj);
+			history.setSessionId(obj.getString("session_id"));
+			if(b)
+			new Dao_Message().update(history);
+			else
+				new Dao_Message().add(history);	
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println(mSessionId);
+
+		return obj.getString("session_id");
+	}
+
 }

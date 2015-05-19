@@ -1,5 +1,7 @@
 package sockets;
 
+import helpers.SessionIdentifierGenerator;
+
 import javax.servlet.http.HttpSession;
 import javax.websocket.HandshakeResponse;
 import javax.websocket.server.HandshakeRequest;
@@ -12,13 +14,7 @@ public class MyEndpointConfig extends ServerEndpointConfig.Configurator {
 			HandshakeRequest request, 
 			HandshakeResponse response)
 	{
-		HttpSession httpSession = null;
-		while(httpSession==null){
-			httpSession = (HttpSession)request.getHttpSession();
-			System.out.println("httpSession null");
-		}
-		config.getUserProperties().put(HttpSession.class.getName(),httpSession);
-
+		config.getUserProperties().put("websocket_token",new SessionIdentifierGenerator().nextSessionId());
 	}
 
 }

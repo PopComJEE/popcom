@@ -14,26 +14,26 @@
 	var serviceLocation = "ws://localhost:8080/popcom/websocket";
 	var $chatWindow;
 
+	
+	function addMessage(userLogin, message){
+		var user = document.getElementById("response");
+		user.innerHTML += "<tr><td>"+userLogin+":</td><td>"+decodeURI(message)+"</td></tr>"
+	}
+	
 	function onMessageReceived(evt) {
-		for ( var i in JSON.parse(evt.data)) {
-			addSession(i.id_session);
-		}
+		var json = JSON.parse(evt.data)
+		addMessage(json.user,json.message);
 	}
 
-	function addSession(session) {
-		var $messageLine = $('<tr><td>' + session + '</td></tr>');
-		$chatWindow.append($messageLine);
-	}
-
-	function sendMessage() {
-		var msg = '{"type":"getUserSessionList"}';
+	function sendMessage(user, message) {
+		var msg = '{"user":"'+user+'","message":"'+message+'","session_id":"'+getUrlParameter("session_id")+'"}';
 		wsocket.send(msg);
+		$('#message').val('');
 	}
 
 	function connectToChatserver() {
 		wsocket = new WebSocket(serviceLocation);
 		wsocket.onmessage = onMessageReceived;
-		wsocket.onopent = sendMessage();
 		alert("connectToChatServer");
 	}
 
@@ -43,15 +43,10 @@
 		xmlHttp.send(null);
 		return xmlHttp.responseText;
 	}
-	
-	function addMessage(userLogin, message){
-		var user = document.getElementById("response");
-		user.innerHTML += "<tr><td>"+userLogin+":</td><td>"+message+"</td></tr>"
-	}
 
 	function populatePage(jsonHistory) {
-		for(var i=0;i<jsonHistory.length;i++){
-			addMessage(jsonHistory[i].user,jsonHistory[i].message);
+		for(var i=0;i<jsonHistory.history.length;i++){
+			addMessage(jsonHistory.history[i].user,jsonHistory.history[i].message);
 		}
 	}
 
@@ -71,10 +66,18 @@
 				+ getUrlParameter("session_id"));
 		alert(response);
 		var myObject = JSON.parse(response);
+		alert("parse ok");
 		if (myObject.status == "refused") {
 			window.location.replace("http://localhost:8080/popcom/login.jsp");
 		} else {
 			populatePage(myObject);
+			alert("populate done");
+			connectToChatserver();
+			$('#chat_window').submit(function(evt) {
+				evt.preventDefault();
+				var text=encodeURI($('#message').val());
+				sendMessage(myObject.user,text);
+			});
 		}
 	};
 	$(document).ready(fonc);
@@ -82,12 +85,12 @@
 </head>
 <body>
 	<div class="form-style">
-		<table id="response" class="table table-bordered">
+		<table id="response">
 		</table>
 		<table>
-			<FORM>
+			<FORM id="chat_window">
 				<tr>
-					<TEXTAREA name="message" rows=5 cols=90%></TEXTAREA>
+					<TEXTAREA id="message" name="message" rows=3 cols=90%></TEXTAREA>
 					<p>
 						<input type="submit" style="width: 90px; height: 50px;"
 							align="right" value="Envoyer">

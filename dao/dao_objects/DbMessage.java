@@ -58,6 +58,9 @@ public class DbMessage extends DbObject{
 			e.printStackTrace();
 		}
 	}
+	
+	public DbMessage (){
+	}
 
 
 	@Override

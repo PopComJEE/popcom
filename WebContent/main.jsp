@@ -72,7 +72,7 @@
 		        for(j=0;j<userList.length;j++) {
 		        	out += '<p><font size="6">' + sessionArray[i].user_list[j].login + '</font></p>';
 		        }
-		       	out += '<p><font size="3">' +sessionArray[i].last_message.user +' : '+sessionArray[i].last_message.message + '</font></p></a><br>';
+		       	out += '<p><font size="3">' +sessionArray[i].last_message.user +' : '+decodeURI(sessionArray[i].last_message.message) + '</font></p></a><br>';
 		    }
 		    conversations.innerHTML += out;
 		    
