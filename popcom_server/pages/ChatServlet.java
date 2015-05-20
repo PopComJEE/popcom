@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import objects.PcSession;
 import objects.PcUser;
+import constants.ServerInfo;
 import controller.SessionController;
 import controller.UserController;
 
@@ -112,10 +113,18 @@ public class ChatServlet extends HttpServlet {
 				System.out.println("accepted");
 				Enumeration<String> parameterNames = request.getParameterNames();
 				String conv_id=new SessionIdentifierGenerator().nextSessionId();
-				new SessionController().joinSession(user, conv_id);
+				boolean b=false;
 				while (parameterNames.hasMoreElements()) {
+					b=true;
 					String paramName = parameterNames.nextElement();
 					new SessionController().joinSession(new UserController().getUser(paramName), conv_id);
+				}
+				if(b){
+					new SessionController().joinSession(user, conv_id);
+					response.setContentType("text/html");
+					String site = new String("http://"+ServerInfo.SERVER_IP+":8080/popcom/fenetre.jsp?session_id="+conv_id);
+					response.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY);
+					response.setHeader("Location", site);
 				}
 			}
 		}

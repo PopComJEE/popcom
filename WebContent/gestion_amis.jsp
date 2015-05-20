@@ -18,7 +18,10 @@
 		return xmlHttp.responseText;
 	}
 
+	var origSearchResult;
+	
 	function populatePage(jsonUser) {
+		origSearchResult=document.getElementById("search_result");
 		var user = document.getElementById("header");
 		user.innerHTML += "<p>" + jsonUser.user_data.first_name
 				+ jsonUser.user_data.last_name + "</p>" + "<p>"
@@ -49,6 +52,7 @@
 		        + '<font size="6">' + friendArray[i].login + '</font></p>';
 
 		    }
+		    friends.innerHTML = origSearchResult.innerHTML;
 		    friends.innerHTML += out;
 
 	}

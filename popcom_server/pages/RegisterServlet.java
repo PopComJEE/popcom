@@ -33,11 +33,15 @@ public class RegisterServlet extends HttpServlet {
 		String email = request.getParameter("email");
 
 		PcUser user=new PcUser(new DbUser(login, Hash.encode(password), birthday, email, lastName, firstName));
-		boolean b = new UserController().addUser(user);
-		
-		accepted(response, user);
+		if(new UserController().getUserByLogin(login)==null){
+			new UserController().addUser(user);
+			accepted(response, user);
+		}else{
+			refused(response);
+		}
+
 	}
-	
+
 	private void accepted(HttpServletResponse response, PcUser user){
 		System.out.println("accepted");
 		response.setContentType("text/html");
@@ -50,6 +54,14 @@ public class RegisterServlet extends HttpServlet {
 		response.addCookie(cookie);
 		user.getUser().setToken(token);
 		new UserController().updateUser(user);
+	}
+
+	private void refused(HttpServletResponse response){
+		System.out.println("refused");
+		response.setContentType("text/html");
+		String site = new String("http://"+ServerInfo.SERVER_IP+":8080/popcom/formulaire.jsp");
+		response.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY);
+		response.setHeader("Location", site);
 	}
 
 
@@ -66,5 +78,5 @@ public class RegisterServlet extends HttpServlet {
 			throws ServletException, IOException {
 		processRequest(req, resp);
 	}
-	
+
 }
