@@ -27,8 +27,6 @@ public class SessionController {
 
 	public boolean joinSession(PcUser user, String sessionId){
 		DbSession session = new DbSession(user.getUser(), sessionId);
-		System.out.println("SCONTROLLER USER : "+user.getUser().toString());
-		System.out.println("SCONTROLLER SESSION : "+session.toString());
 		try {
 			mDao.add(session);
 		} catch (SQLException e) {

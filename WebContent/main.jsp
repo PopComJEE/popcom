@@ -34,7 +34,6 @@
 		wsocket = new WebSocket(serviceLocation);
 		wsocket.onmessage = onMessageReceived;
 		wsocket.onopent = sendMessage();
-		alert("connectToChatServer");
 	}
 
 	function httpGet(theUrl) {
@@ -57,7 +56,7 @@
 		    var i;
 		    for(i = 0; i < friendArray.length; i++) {
 		        out += '<p><input type="checkbox" name="'+friendArray[i].user_data.id+'" value="'+friendArray[i].user_data.id+'">'
-		        + '<font size="6">' + friendArray[i].user_data.login + '</font><p>';
+		        + '<font size="6">' + friendArray[i].user_data.login + '</font></p>';
 		    }
 		    friends.innerHTML += out;
 		    
@@ -77,11 +76,12 @@
 		    conversations.innerHTML += out;
 		    
 	}
+	
+	var myObject;
 
 	var fonc = function() {
 		var response = httpGet("http://localhost:8080/popcom/main?type=getAll");
-		alert(response);
-		var myObject = JSON.parse(response);
+		myObject = JSON.parse(response);
 		if (myObject.status == "refused") {
 			window.location.replace("http://localhost:8080/popcom/login.jsp");
 		} else {
@@ -97,8 +97,8 @@
 		<img id="img_pro" src="popcorn.png"  /> 
 		<center><font size="15">
 			Profil 
-			<a href="index.jsp">Déconnexion<img id="modification" src="exit.png">
-			</a> </br>
+			<a href="logout">Déconnection<img id="modification" src="exit.png">
+			</a> <br>
 			<a href="modif.jsp">Modifier compte<img id="modification" src="modif.png">
 			</a>
 		</font></center>
@@ -107,7 +107,7 @@
 	</div>
 	
 <div id="zone_contact"><center><font size="6">Contacts</font></center><br>
-<form id="zone_contact_active" action="chat" method="POST"><p><input type="submit" value="Connexion"></p></form></div>
+<form id="zone_contact_active" action="chat" method="POST"><p><input type="submit" value="Chatter"></p></form></div>
 <div id="zone_convers"><center><font size="6">Conversations</font></center></div>
 
 

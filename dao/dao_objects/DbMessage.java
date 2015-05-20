@@ -46,13 +46,9 @@ public class DbMessage extends DbObject{
 
 	public DbMessage (ResultSet rs){
 		try {
-			System.out.println("ID : "+rs.getString(ID));
 			mId = rs.getString(ID);
-			System.out.println("ID_SESSION : "+ rs.getString(ID_SESSION));
 			mSessionId = rs.getString(ID_SESSION);
-			System.out.println("HISTORY : "+rs.getString(HISTORY));
 			mHistory = parseJsonArray(rs.getString(HISTORY));
-			System.out.println("LAST_MESSAGE : "+rs.getString(LAST_MESSAGE));
 			mLastMessage = parseJsonObject(rs.getString(LAST_MESSAGE));
 		} catch (SQLException e) {
 			e.printStackTrace();

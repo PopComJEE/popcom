@@ -40,7 +40,6 @@ public class MainServlet extends HttpServlet {
 			out.print("{\"status\":\"refused\"}");
 			out.flush();
 		}else{
-			System.out.println("accepted");
 			String type = request.getParameter("type");
 			if(type.equalsIgnoreCase("getAll")){
 				PcUser user= new UserController().getUserByToken(sessionId);
@@ -50,6 +49,7 @@ public class MainServlet extends HttpServlet {
 					out.print("{\"status\":\"refused\"}");
 					out.flush();
 				}else{
+					System.out.println("accepted");
 					PrintWriter out = response.getWriter();
 					out.print(JsonHelper.toJsonObject(user));
 					out.flush();

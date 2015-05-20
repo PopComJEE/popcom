@@ -112,7 +112,6 @@ public class ChatServlet extends HttpServlet {
 				System.out.println("accepted");
 				Enumeration<String> parameterNames = request.getParameterNames();
 				String conv_id=new SessionIdentifierGenerator().nextSessionId();
-				System.out.println("refused");
 				new SessionController().joinSession(user, conv_id);
 				while (parameterNames.hasMoreElements()) {
 					String paramName = parameterNames.nextElement();

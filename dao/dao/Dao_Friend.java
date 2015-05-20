@@ -91,10 +91,8 @@ public class Dao_Friend extends Dao {
 				String generatedId = rs.getString(DbUser.ID);
 				friend.setId(generatedId);
 			}
-			System.out.println("Friendship added !");
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
-			System.out.println("Friendship not added !");
 			pstmt.close();
 			return null;
 		}
@@ -117,10 +115,8 @@ public class Dao_Friend extends Dao {
 					+DbFriend.USER_ID+" = '"+friend.getUserId()+"'"
 					);
 			pstmt.executeUpdate();
-			System.out.println("Friendship suppressed !");
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
-			System.out.println("Friendship suppression failed !");
 			pstmt.close();
 			return null;
 		}

@@ -70,10 +70,7 @@ public class MyEndpoint {
 	@OnOpen
 	public void open(Session session, EndpointConfig config) {
 		mSessionId=config.getUserProperties().get("websocket_token").toString();
-		System.out.println("session opened");
-		System.out.println(session.getBasicRemote().toString());
-
-		System.out.println(mSessionId);
+		System.out.println("ws session opened");
 	}
 
 	@OnMessage
@@ -139,8 +136,6 @@ public class MyEndpoint {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println(mSessionId);
-
 		return obj.getString("session_id");
 	}
 

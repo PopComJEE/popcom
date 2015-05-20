@@ -100,10 +100,8 @@ public class Dao_Session extends Dao {
 				String generatedId = rs.getString(DbUser.ID);
 				session.setId(generatedId);
 			}
-			System.out.println("DbSession added !");
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
-			System.out.println("DbSession not added !");
 			pstmt.close();
 			return null;
 		}
@@ -124,10 +122,8 @@ public class Dao_Session extends Dao {
 					+DbSession.ID_SESSION+" = '"+ session.getSessionId()+"'"
 					);
 			pstmt.executeUpdate();
-			System.out.println("DbSession deleted !");
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
-			System.out.println("DbSession not deleted !");
 			pstmt.close();
 			return null;
 		}

@@ -34,9 +34,6 @@ public class Dao_Message extends Dao {
 					+DbMessage.ID_SESSION+" = '"+id+"'"
 					);
 			if(rset.next())
-				System.out.println("RESULT SET 1: "+rset.getString(2));
-			System.out.println("RESULT SET 2: "+rset.getString(3));
-			System.out.println("RESULT SET 3: "+rset.getString(4));
 				friend = new DbMessage(rset);
 			mConnection.close();
 		} catch (Exception e) {
@@ -76,10 +73,8 @@ public class Dao_Message extends Dao {
 				String generatedId = rs.getString(DbUser.ID);
 				friend.setId(generatedId);
 			}
-			System.out.println("messages added !");
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
-			System.out.println("messages not added !");
 			pstmt.close();
 			return null;
 		}
@@ -100,10 +95,8 @@ public class Dao_Message extends Dao {
 					+DbMessage.ID_SESSION+" = '"+friend.getSessionId()+"'"
 					);
 			pstmt.executeUpdate();
-			System.out.println("messages suppressed !");
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
-			System.out.println("messages suppression failed !");
 			pstmt.close();
 			return null;
 		}
@@ -127,10 +120,8 @@ public class Dao_Message extends Dao {
 					+DbMessage.ID_SESSION+" = '"+user.getSessionId()+"'"
 					);
 			pstmt.executeUpdate();
-			System.out.println("messages modified !");
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
-			System.out.println("messages not modified !");
 			pstmt.close();
 			return null;
 		}

@@ -24,9 +24,7 @@ public abstract class Dao {
 		try {
 			Class.forName(DATABASE_DRIVER).newInstance();
 			DriverManager.setLoginTimeout(10);
-//			System.out.println("Connecting to database...");
 			mConnection = DriverManager.getConnection(DATABASE_ADRESS, DATABASE_LOGIN, DATABASE_PASSWORD);
-//			System.out.println("Connection Success");
 			return true;
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();

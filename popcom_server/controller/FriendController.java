@@ -21,11 +21,34 @@ public class FriendController {
 	public FriendController(){
 		mDao = new Dao_Friend();
 	}
+	
+	public boolean addFriend(String userId, String friendId){
+		DbFriend friendship = new DbFriend(userId, friendId);
+		try {
+			mDao.add(friendship);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
 
 	public boolean addFriend(PcUser user, String friendId){
 		DbFriend friendship = new DbFriend(user.getUser(), friendId);
 		try {
 			mDao.add(friendship);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+
+
+	public boolean removeFriend(String userId, String friendId){
+		DbFriend friendship = new DbFriend(userId, friendId);
+		try {
+			mDao.remove(friendship);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;

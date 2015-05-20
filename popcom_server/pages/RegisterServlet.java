@@ -1,6 +1,7 @@
 package pages;
 
 import helpers.Hash;
+import helpers.SessionIdentifierGenerator;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -8,15 +9,17 @@ import java.io.PrintWriter;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import objects.PcUser;
+import constants.ServerInfo;
 import controller.UserController;
 import dao_objects.DbUser;
 
-public class ServerRegisterServlet extends HttpServlet {
+public class RegisterServlet extends HttpServlet {
 
 	protected void processRequest(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -29,20 +32,24 @@ public class ServerRegisterServlet extends HttpServlet {
 		String lastName = request.getParameter("last_name");
 		String email = request.getParameter("email");
 
+		PcUser user=new PcUser(new DbUser(login, Hash.encode(password), birthday, email, lastName, firstName));
+		boolean b = new UserController().addUser(user);
 		
-		boolean b = new UserController().addUser(new PcUser(new DbUser(login, Hash.encode(password), birthday, email, lastName, firstName)));
-		
-//		PcUser tempUser= new UserController().getUserByLogin(userLogin);
-		if(b){
-			System.out.println("register OK");
-			System.out.println(request.getSession().getAttribute("ID"));
-		}else {
-			System.out.println("register not OK");
-		}
-
-//		PrintWriter out = response.getWriter();
-//		out.print(json);
-//		out.flush();
+		accepted(response, user);
+	}
+	
+	private void accepted(HttpServletResponse response, PcUser user){
+		System.out.println("accepted");
+		response.setContentType("text/html");
+		String site = new String("http://"+ServerInfo.SERVER_IP+":8080/popcom/main.jsp");
+		response.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY);
+		response.setHeader("Location", site);
+		String token = new SessionIdentifierGenerator().nextSessionId();
+		Cookie cookie = new Cookie ("session_id", token);
+		cookie.setMaxAge(-1);
+		response.addCookie(cookie);
+		user.getUser().setToken(token);
+		new UserController().updateUser(user);
 	}
 
 

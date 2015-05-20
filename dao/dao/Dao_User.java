@@ -130,36 +130,9 @@ public class Dao_User extends Dao{
 		PreparedStatement pstmt = null;
 		try {
 			connect();
-			System.out.println("INSERT INTO "+DbUser.TABLE_USERS
-					+" ("
-					//					+DbUser.ID+", "
-					+DbUser.LAST_NAME+", "
-					+DbUser.FIRST_NAME+", "
-					+DbUser.BIRTHDAY+", "
-					+DbUser.EMAIL+", "
-					+DbUser.LOGIN+", "
-					+DbUser.PASSWORD+", "
-					+DbUser.STATUS+", "
-					+DbUser.MESSAGE+", "
-					+DbUser.HTML_TOKEN+", "
-					+DbUser.IS_ADMIN
-					+") values ("
-					//					+"'null',"
-					+"'"+user.getLastName()+"',"
-					+"'"+user.getFirstName()+"',"
-					+"'"+user.getBirthday()+"',"
-					+"'"+user.getEmail()+"',"
-					+"'"+user.getLogin()+"',"
-					+"'"+user.getPassword()+"',"
-					+"'"+user.getStatus()+"',"
-					+"'"+user.getMessage()+"',"
-					+"'"+user.getToken()+"',"
-					+"'"+user.isAdmin()+"'"
-					+")");
 			pstmt = mConnection.prepareStatement(
 					"INSERT INTO "+DbUser.TABLE_USERS
 					+" ("
-					//					+DbUser.ID+", "
 					+DbUser.LAST_NAME+", "
 					+DbUser.FIRST_NAME+", "
 					+DbUser.BIRTHDAY+", "
@@ -171,7 +144,6 @@ public class Dao_User extends Dao{
 					+DbUser.HTML_TOKEN+", "
 					+DbUser.IS_ADMIN
 					+") values ("
-					//					+"'null',"
 					+"'"+user.getLastName()+"',"
 					+"'"+user.getFirstName()+"',"
 					+"'"+user.getBirthday()+"',"
@@ -185,7 +157,6 @@ public class Dao_User extends Dao{
 					+")"
 					);
 			pstmt.executeUpdate();
-			System.out.println("DbUser added !");
 			ResultSet rs = pstmt.getGeneratedKeys();
 			if (rs != null && rs.first()) {
 				// on récupère l'id généré
@@ -194,7 +165,6 @@ public class Dao_User extends Dao{
 			}
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
-			System.out.println("DbUser not added !");
 			pstmt.close();
 			return null;
 		}
@@ -215,10 +185,8 @@ public class Dao_User extends Dao{
 					+DbUser.ID+" = '"+user.getId()+"'"
 					);
 			pstmt.executeUpdate();
-			System.out.println("DbUser deleted !");
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
-			System.out.println("DbUser not deleted !");
 			pstmt.close();
 			return null;
 		}
@@ -230,9 +198,23 @@ public class Dao_User extends Dao{
 	@Override
 	public DbObject update(DbObject dbObject) throws SQLException {
 		DbUser user = (DbUser) dbObject;
+		System.out.println("update DBobject");
 		PreparedStatement pstmt = null;
 		try {
 			connect();
+			System.out.println("UPDATE "+DbUser.TABLE_USERS
+					+" SET "
+					+DbUser.LAST_NAME+" = '"+user.getLastName()+"', "
+					+DbUser.FIRST_NAME+" = '"+user.getFirstName()+"', "
+					+DbUser.BIRTHDAY+" = '"+user.getBirthday()+"', "
+					+DbUser.EMAIL+" = '"+user.getEmail()+"', "
+					+DbUser.PASSWORD+" = '"+user.getPassword()+"',"
+					+DbUser.STATUS+" = '"+user.getStatus()+"', "
+					+DbUser.MESSAGE+" = '"+user.getMessage()+"', "
+					+DbUser.HTML_TOKEN+" = '"+user.getToken()+"', "
+					+DbUser.IS_ADMIN+" = '"+user.isAdmin()+"'"
+					+" WHERE "
+					+DbUser.LOGIN+" = '"+user.getLogin()+"'");
 			pstmt = mConnection.prepareStatement(
 					"UPDATE "+DbUser.TABLE_USERS
 					+" SET "
@@ -240,20 +222,17 @@ public class Dao_User extends Dao{
 					+DbUser.FIRST_NAME+" = '"+user.getFirstName()+"', "
 					+DbUser.BIRTHDAY+" = '"+user.getBirthday()+"', "
 					+DbUser.EMAIL+" = '"+user.getEmail()+"', "
-					+DbUser.LOGIN+" = '"+user.getLogin()+"', "
 					+DbUser.PASSWORD+" = '"+user.getPassword()+"',"
 					+DbUser.STATUS+" = '"+user.getStatus()+"', "
 					+DbUser.MESSAGE+" = '"+user.getMessage()+"', "
 					+DbUser.HTML_TOKEN+" = '"+user.getToken()+"', "
 					+DbUser.IS_ADMIN+" = '"+user.isAdmin()+"'"
 					+" WHERE "
-					+DbUser.ID+" = '"+user.getId()+"'"
+					+DbUser.LOGIN+" = '"+user.getLogin()+"'"
 					);
 			pstmt.executeUpdate();
-			System.out.println("user modified !");
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
-			System.out.println("user not modified !");
 			pstmt.close();
 			return null;
 		}
@@ -273,13 +252,13 @@ public class Dao_User extends Dao{
 			rset = stmt.executeQuery(
 					"SELECT * FROM "+DbUser.TABLE_USERS
 					+" WHERE "
-					+DbUser.EMAIL+" = '"+query+"'"
+					+DbUser.EMAIL+" LIKE '%"+query+"%'"
 					+" OR "
-					+DbUser.FIRST_NAME+" = '"+query+"'"
+					+DbUser.FIRST_NAME+" LIKE '%"+query+"%'"
 					+" OR "
-					+DbUser.LAST_NAME+" = '"+query+"'"
+					+DbUser.LAST_NAME+" LIKE '%"+query+"%'"
 					+" OR "
-					+DbUser.LOGIN+" = '"+query+"'"
+					+DbUser.LOGIN+" LIKE '%"+query+"%'"
 					);
 			while(rset.next()){
 				userList.add(new DbUser(rset));

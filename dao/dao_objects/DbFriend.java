@@ -21,6 +21,11 @@ public class DbFriend extends DbObject {
 				+"\n"+FRIEND_ID+" : " + mFriendId;
 	}
 	
+	public DbFriend (String userId, String friendId){
+		mFriendId = friendId;
+		mUserId = userId;
+	}
+	
 	public DbFriend (DbUser user, String friendId){
 		mFriendId = friendId;
 		mUserId = user.getId();

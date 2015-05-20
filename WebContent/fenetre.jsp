@@ -34,7 +34,6 @@
 	function connectToChatserver() {
 		wsocket = new WebSocket(serviceLocation);
 		wsocket.onmessage = onMessageReceived;
-		alert("connectToChatServer");
 	}
 
 	function httpGet(theUrl) {
@@ -64,14 +63,11 @@
 	var fonc = function() {
 		var response = httpGet("http://localhost:8080/popcom/chat?type=getAll&&session_id="
 				+ getUrlParameter("session_id"));
-		alert(response);
 		var myObject = JSON.parse(response);
-		alert("parse ok");
 		if (myObject.status == "refused") {
 			window.location.replace("http://localhost:8080/popcom/login.jsp");
 		} else {
 			populatePage(myObject);
-			alert("populate done");
 			connectToChatserver();
 			$('#chat_window').submit(function(evt) {
 				evt.preventDefault();

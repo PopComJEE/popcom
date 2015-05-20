@@ -51,7 +51,7 @@ public class UserController {
 	public PcUser getUser(String userId){
 		DbUser dbUser;
 		try {
-			System.out.println(dbUser = (DbUser) mDao.get(userId));
+			dbUser = (DbUser) mDao.get(userId);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
@@ -81,7 +81,6 @@ public class UserController {
 		try {
 			dbUser = (DbUser) ((Dao_User) mDao).getByToken(token);
 			if(dbUser==null){
-				System.out.println("DBUSER RETURN NULL");
 				return null;
 			}
 		} catch (SQLException e) {
